@@ -1,0 +1,41 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: fmk-kc
+spec:
+  unsupported:
+    podTemplate:
+      spec:
+        containers:
+          - name: keycloak
+            args:
+              - -Djgroups.dns.query=fmk-kc-discovery.keycloak
+              - --verbose
+              - start
+              - --hostname-strict-https=true
+            env:
+              - name: KC_DB_URL_PROPERTIES
+                value: "?sslmode=verify-full"
+              - name: KC_HOSTNAME_URL
+                value: 
+            volumeMounts:
+              - name: ssl-volume
+                mountPath: /opt/keycloak/.postgresql
+        volumes:
+          - name: ssl-volume
+            secret:
+              secretName: keycloak-db-ssl
+  instances: 1
+  db:
+    vendor: postgres
+    host: 
+    usernameSecret:
+      name: keycloak-db-secret
+      key: username
+    passwordSecret:
+      name: keycloak-db-secret
+      key: password
+  http:
+    tlsSecret: tls-secret
+  hostname:
+    adminUrl: 

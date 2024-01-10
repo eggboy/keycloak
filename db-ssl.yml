@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keycloak-db-ssl
+  namespace: keycloak
+type: Opaque
+data:
+  root.ca: >-
